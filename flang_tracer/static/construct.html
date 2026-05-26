@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flang Construct Trace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+    <link rel="stylesheet" href="/static/style.css">
+    <script>hljs.highlightAll();</script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Flang <span>Construct Trace</span></h1>
+            <p>Trace a Fortran construct through the compilation pipeline</p>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label for="example-select">Example</label>
+                <select id="example-select"></select>
+            </div>
+            <div class="control-group">
+                <label for="line-input">Line Range</label>
+                <input type="text" id="line-input" value="5-10" placeholder="e.g. 5 or 5-10" />
+            </div>
+            <div class="control-group">
+                <label for="opt-select">Opt Level</label>
+                <select id="opt-select">
+                    <option value="O0">O0</option>
+                    <option value="O1">O1</option>
+                    <option value="O2">O2</option>
+                    <option value="O3">O3</option>
+                </select>
+            </div>
+            <button id="trace-btn" class="btn primary">Trace</button>
+        </div>
+    </header>
+    <main>
+        <div id="tabs" class="tabs"></div>
+        <div id="tab-contents" class="tab-contents"></div>
+        <div class="export-buttons" style="margin-top:1rem;">
+            <button id="export-json" class="btn">Export JSON</button>
+            <button id="export-html" class="btn">Export HTML</button>
+        </div>
+    </main>
+    <script src="/static/construct.js"></script>
+</body>
+</html>

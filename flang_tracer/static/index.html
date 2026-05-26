@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flang Tracer - Real-Time Dashboard</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- D3.js and Chart.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Flang <span>Tracer</span></h1>
+            <p>Real-Time Semantic Evolution Map</p>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label for="flang-input">Flang Path</label>
+                <input type="text" id="flang-input" value="/home/siya/llvm-project/build/bin/flang-new" placeholder="Path to flang-new">
+            </div>
+            <div class="control-group">
+                <label for="example-select">Example</label>
+                <select id="example-select">
+                    <option value="" disabled selected>Loading...</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="line-input">Line Range</label>
+                <input type="text" id="line-input" value="5-10" placeholder="e.g. 5 or 5-10">
+            </div>
+            <div class="control-group">
+                <label for="opt-select">Opt Level</label>
+                <select id="opt-select">
+                    <option value="O0">O0</option>
+                    <option value="O1">O1</option>
+                    <option value="O2">O2</option>
+                    <option value="O3">O3</option>
+                </select>
+            </div>
+            <div class="control-group checkbox-group">
+                <input type="checkbox" id="diff-opt">
+                <label for="diff-opt">Diff O3</label>
+            </div>
+            <button id="run-btn" class="btn primary">Trace</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="top-row">
+            <div class="panel metrics-panel">
+                <h2>Performance Overview</h2>
+                <canvas id="metrics-chart"></canvas>
+            </div>
+            
+            <div class="panel mapping-panel">
+                <h2>IR Mapping Table</h2>
+                <div id="ir-mapping-table" class="table-container"></div>
+            </div>
+            
+            <div class="panel lowering-panel">
+                <h2>Lowering Expansion (D3.js)</h2>
+                <div id="lowering-container" style="width: 100%; height: 250px;"></div>
+            </div>
+        </div>
+
+        <div class="stages-panel">
+            <div class="stage-col" id="col-source">
+                <h3>Source Code</h3>
+                <div class="code-container"><pre><code id="code-source"></code></pre></div>
+            </div>
+            <div class="stage-col" id="col-hlfir">
+                <h3>HLFIR <span class="status-badge" id="badge-hlfir">Pending</span></h3>
+                <div class="code-container"><pre><code id="code-hlfir"></code></pre></div>
+            </div>
+            <div class="stage-col" id="col-fir">
+                <h3>FIR <span class="status-badge" id="badge-fir">Pending</span></h3>
+                <div class="code-container"><pre><code id="code-fir"></code></pre></div>
+            </div>
+            <div class="stage-col" id="col-llvm_ir">
+                <h3>LLVM IR <span class="status-badge" id="badge-llvm_ir">Pending</span></h3>
+                <div class="code-container"><pre><code id="code-llvm_ir"></code></pre></div>
+            </div>
+            <div class="stage-col hidden" id="col-llvm_ir_o3">
+                <h3>LLVM IR (O3) <span class="status-badge" id="badge-llvm_ir_o3">Pending</span></h3>
+                <div class="code-container"><pre><code id="code-llvm_ir_o3"></code></pre></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

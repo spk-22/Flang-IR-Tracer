@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flang-tracer"
+version = "0.1.0"
+description = "A tracer for Flang's multi-stage compilation pipeline."
+authors = [{ name="Siya K" }]
+requires-python = ">=3.9"
+dependencies = [
+    "pytest",
+]
+
+[project.scripts]
+flang-tracer = "flang_tracer.cli:main"
