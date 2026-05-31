@@ -70,11 +70,13 @@ class FlangDriver:
         return content
 
     def get_fir(self, input_file: str) -> str:
-        content, _, _ = self.run_stage(input_file, ["-fc1", "-emit-fir", "-mmlir", "--mlir-print-debuginfo", "-o", "-"])
+        # Use Flang's FIR dump flag to produce MLIR representation
+        content, _, _ = self.run_stage(input_file, ["-fc1", "-fdump-fir", "-mmlir", "--mlir-print-debuginfo", "-o", "-"])
         return content
 
     def get_hlfir(self, input_file: str) -> str:
-        content, _, _ = self.run_stage(input_file, ["-fc1", "-emit-hlfir", "-mmlir", "--mlir-print-debuginfo", "-o", "-"])
+        # Use Flang's HLFIR dump flag to produce MLIR representation
+        content, _, _ = self.run_stage(input_file, ["-fc1", "-fdump-hlfir", "-mmlir", "--mlir-print-debuginfo", "-o", "-"])
         return content
 
     def get_llvm_ir(self, input_file: str) -> str:
@@ -92,7 +94,7 @@ class FlangDriver:
         
         results = {}
         for name, flags in stages.items():
-            content, duration = self.run_stage(input_file, flags)
+            content, duration, _ = self.run_stage(input_file, flags)
             results[name] = {
                 "content": content,
                 "duration_ms": round(duration * 1000, 2)

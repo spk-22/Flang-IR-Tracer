@@ -1,12 +1,3 @@
-# flang-ir-tracer
-
-A multi-stage compilation pipeline tracer for Flang (Fortran) that visualizes parse tree, semantics, FIR, HLFIR, LLVM IR, and memory usage.
-
-## Quick Start
-```bash
-./build.sh   # install dependencies and set up environment
-./run.sh --serve   # launch the web UI at http://0.0.0.0:8000
-```
 
 You can also run a single file trace:
 ```bash

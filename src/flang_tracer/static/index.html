@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flang Tracer - Real-Time Dashboard</title>
+    <title>Flang Tracer - Multi-Stage Pipeline Dashboard</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- D3.js and Chart.js -->
@@ -15,7 +15,7 @@
     <header>
         <div class="logo">
             <h1>Flang <span>Tracer</span></h1>
-            <p>Real-Time Semantic Evolution Map</p>
+            <p>Multi-Stage Pipeline Dashboard</p>
         </div>
         <div class="controls">
             <div class="control-group">
@@ -49,45 +49,98 @@
         </div>
     </header>
 
+    <!-- Tabs -->
+    <div class="tab-bar" id="tab-bar">
+        <button class="tab-btn active" data-tab="tab-ir">IR Code</button>
+        <button class="tab-btn" data-tab="tab-performance">Performance</button>
+        <button class="tab-btn" data-tab="tab-comparison">Comparison</button>
+        <button class="tab-btn" data-tab="tab-parsetree">Parse Tree</button>
+    </div>
+
     <main>
-        <div class="top-row">
-            <div class="panel metrics-panel">
-                <h2>Performance Overview</h2>
-                <canvas id="metrics-chart"></canvas>
-            </div>
-            
-            <div class="panel mapping-panel">
-                <h2>IR Mapping Table</h2>
-                <div id="ir-mapping-table" class="table-container"></div>
-            </div>
-            
-            <div class="panel lowering-panel">
-                <h2>Lowering Expansion (D3.js)</h2>
-                <div id="lowering-container" style="width: 100%; height: 250px;"></div>
+        <!-- TAB 1: IR Code -->
+        <div id="tab-ir" class="tab-panel">
+            <div class="stages-panel">
+                <div class="stage-col" id="col-source">
+                    <h3>Source Code</h3>
+                    <div class="code-container"><pre><code id="code-source"></code></pre></div>
+                </div>
+                <div class="stage-col" id="col-parse_tree">
+                    <h3>Parse Tree <span class="status-badge" id="badge-parse_tree">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-parse_tree"></code></pre></div>
+                </div>
+                <div class="stage-col" id="col-semantic">
+                    <h3>Semantic <span class="status-badge" id="badge-semantic">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-semantic"></code></pre></div>
+                </div>
+                <div class="stage-col" id="col-hlfir">
+                    <h3>HLFIR <span class="status-badge" id="badge-hlfir">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-hlfir"></code></pre></div>
+                </div>
+                <div class="stage-col" id="col-fir">
+                    <h3>FIR <span class="status-badge" id="badge-fir">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-fir"></code></pre></div>
+                </div>
+                <div class="stage-col" id="col-llvm_ir">
+                    <h3>LLVM IR <span class="status-badge" id="badge-llvm_ir">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-llvm_ir"></code></pre></div>
+                </div>
+                <div class="stage-col hidden" id="col-llvm_ir_o3">
+                    <h3>LLVM IR (O3) <span class="status-badge" id="badge-llvm_ir_o3">Pending</span></h3>
+                    <div class="code-container"><pre><code id="code-llvm_ir_o3"></code></pre></div>
+                </div>
             </div>
         </div>
 
-        <div class="stages-panel">
-            <div class="stage-col" id="col-source">
-                <h3>Source Code</h3>
-                <div class="code-container"><pre><code id="code-source"></code></pre></div>
+        <!-- TAB 2: Performance -->
+        <div id="tab-performance" class="tab-panel hidden">
+            <div class="top-row">
+                <div class="panel metrics-panel">
+                    <h2>Performance Overview</h2>
+                    <canvas id="metrics-chart"></canvas>
+                </div>
+                
+                <div class="panel lowering-panel">
+                    <h2>Lowering Expansion (D3.js)</h2>
+                    <div id="lowering-container" style="width: 100%; height: 250px;"></div>
+                </div>
             </div>
-            <div class="stage-col" id="col-hlfir">
-                <h3>HLFIR <span class="status-badge" id="badge-hlfir">Pending</span></h3>
-                <div class="code-container"><pre><code id="code-hlfir"></code></pre></div>
+        </div>
+
+        <!-- TAB 3: Comparison -->
+        <div id="tab-comparison" class="tab-panel hidden">
+            <div class="panel" style="flex:1;">
+                <h2>Cross-Stage Mapping Table</h2>
+                <div id="ir-mapping-table" class="table-container"></div>
             </div>
-            <div class="stage-col" id="col-fir">
-                <h3>FIR <span class="status-badge" id="badge-fir">Pending</span></h3>
-                <div class="code-container"><pre><code id="code-fir"></code></pre></div>
+            <div class="panel" style="flex:1; margin-top: 1rem;">
+                <h2>Static IR Comparison Reference</h2>
+                <div id="ir-static-reference-table" class="table-container">
+                    <p style="color: #64748b; padding: 1rem; text-align: center;">No reference data available yet. Please click Trace.</p>
+                </div>
             </div>
-            <div class="stage-col" id="col-llvm_ir">
-                <h3>LLVM IR <span class="status-badge" id="badge-llvm_ir">Pending</span></h3>
-                <div class="code-container"><pre><code id="code-llvm_ir"></code></pre></div>
+        </div>
+
+        <!-- TAB 4: Parse Tree -->
+        <div id="tab-parsetree" class="tab-panel hidden">
+            <div class="panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>Parse Tree Visualization (D3.js Tree)</h2>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="text" id="parse-tree-search" placeholder="Search AST nodes..." style="padding: 0.4rem 0.8rem; font-size: 0.8rem; height: 30px; margin: 0; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #f8fafc; border-radius: 4px; outline: none;">
+                        <button id="btn-parse-tree-zoom-fit" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Zoom Fit</button>
+                        <button id="btn-parse-tree-expand" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Expand All</button>
+                        <button id="btn-parse-tree-collapse" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Collapse All</button>
+                    </div>
+                </div>
+                <div id="parse-tree-container" style="width: 100%; height: 600px; min-height: 500px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; position: relative;"></div>
             </div>
-            <div class="stage-col hidden" id="col-llvm_ir_o3">
-                <h3>LLVM IR (O3) <span class="status-badge" id="badge-llvm_ir_o3">Pending</span></h3>
-                <div class="code-container"><pre><code id="code-llvm_ir_o3"></code></pre></div>
-            </div>
+        </div>
+
+        <!-- Export Buttons (always visible) -->
+        <div class="export-bar">
+            <button id="export-json" class="btn">Export JSON</button>
+            <button id="export-html" class="btn">Export HTML</button>
         </div>
     </main>
 
